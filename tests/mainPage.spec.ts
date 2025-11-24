@@ -6,12 +6,16 @@ test.describe('Тесты основной таблицы', () => {
   });
 
   test('Проверка отображения элементов навигации в заголовке', async ({ page }) => {
-    await expect(page.getByRole('link', { name: 'Playwright logo Playwright' })).toBeVisible();
+    test.step('Проверка отображения элемента Playwright logo', async () => {
+      await expect(page.getByRole('link', { name: 'Playwright logo Playwright' })).toBeVisible();
+    });
 
-    await expect(page.getByRole('link', { name: 'Docs' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'API' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Node.js' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Community' })).toBeVisible();
+    test.step('Проверка отображения элемента ', async () => {
+      await expect(page.getByRole('link', { name: 'Docs' })).toBeVisible();
+      await expect(page.getByRole('link', { name: 'API' })).toBeVisible();
+      await expect(page.getByRole('button', { name: 'Node.js' })).toBeVisible();
+      await expect(page.getByRole('link', { name: 'Community' })).toBeVisible();
+    });
 
     await expect(page.getByRole('link', { name: 'GitHub repository' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Discord server' })).toBeVisible();
@@ -79,5 +83,14 @@ test.describe('Тесты основной таблицы', () => {
     await expect(page.getByRole('heading', { name: 'Playwright enables reliable' })).toContainText(
       'Playwright enables reliable end-to-end testing for modern web apps.',
     );
+  });
+
+  ['system', 'light', 'dark'].forEach((value) => {
+    test(`Проверка стилей активного ${value} мода`, async ({ page }) => {
+      await page.evaluate((value) => {
+        document.querySelector('html')?.setAttribute('data-theme', value);
+      }, value);
+      await expect(page).toHaveScreenshot(`pageWith${value}Mode.png`);
+    });
   });
 });
